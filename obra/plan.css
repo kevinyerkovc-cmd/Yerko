@@ -1,0 +1,36 @@
+/* Clases de dibujo compartidas por la lámina web y la versión imprimible.
+   Los colores se toman de variables del documento anfitrión. */
+.muro{fill:var(--ink);stroke:var(--ink);stroke-width:.012}
+.piso{fill:var(--surface)}
+.piso-h{fill:var(--wash)}
+.gap{fill:var(--surface)}
+.op{stroke:var(--azul);stroke-width:.035;fill:none;stroke-linecap:square}
+.op-f{fill:var(--azul);opacity:.18}
+.leaf{stroke:var(--ink-2);stroke-width:.03;fill:none}
+.arc{stroke:var(--ink-2);stroke-width:.022;fill:none;stroke-dasharray:.12 .09}
+.f-obj{fill:var(--wash);stroke:var(--ink-2);stroke-width:.022}
+.f-soft{fill:none;stroke:var(--ink-2);stroke-width:.022}
+.f-car{fill:none;stroke:var(--ink-2);stroke-width:.03}
+.f-line{stroke:var(--ink-2);stroke-width:.022;fill:none}
+.lbl{font-family:Archivo,sans-serif;font-weight:600;fill:var(--ink);text-anchor:middle;dominant-baseline:middle}
+.lbl-s{font-family:"IBM Plex Mono",monospace;fill:var(--ambar);text-anchor:middle;dominant-baseline:middle}
+.dim{stroke:var(--ambar);stroke-width:.018;fill:none}
+.dim-t{font-family:"IBM Plex Mono",monospace;fill:var(--ambar);text-anchor:middle;dominant-baseline:middle;font-size:.26px}
+.axis{stroke:var(--rule);stroke-width:.02;stroke-dasharray:.6 .18 .1 .18;fill:none}
+.lot{stroke:var(--ink);stroke-width:.06;fill:none;stroke-dasharray:1.1 .3 .18 .3}
+.grass{fill:var(--verde);opacity:.17}
+.pave{fill:var(--wash)}
+.street{fill:var(--ink-2);opacity:.16}
+.thin{stroke:var(--ink-2);stroke-width:.02;fill:none}
+.note-t{font-family:"IBM Plex Mono",monospace;fill:var(--ink-2);font-size:.3px}
+/* fachadas */
+.el-wall{fill:var(--surface);stroke:var(--ink);stroke-width:.035}
+.el-back{fill:var(--wash);stroke:var(--ink-2);stroke-width:.025}
+.el-slab{fill:var(--ink);opacity:.82}
+.el-glass{fill:var(--azul);opacity:.3;stroke:var(--azul);stroke-width:.03}
+.el-dark{fill:var(--ink-2);opacity:.5;stroke:var(--ink);stroke-width:.03}
+.el-rail{stroke:var(--ink);stroke-width:.03;fill:none}
+.el-gnd{stroke:var(--ink);stroke-width:.07;fill:none}
+.el-hatch{stroke:var(--ink-2);stroke-width:.02;fill:none}
+/* axonométrica */
+.ax-ln{stroke:#2a2f35;stroke-width:.05;stroke-opacity:.42;fill:none;stroke-linejoin:round}

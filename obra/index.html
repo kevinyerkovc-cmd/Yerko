@@ -1,0 +1,544 @@
+<title>Casa Yerko 250 m²</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;800&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="plan.css">
+<style>
+/* Layout: cabecera con ficha del proyecto, barra de láminas pegajosa,
+   lienzo de dibujo a ancho completo con rótulo inferior y panel de notas. */
+:root{
+  --paper:#f6f7f9; --surface:#ffffff; --ink:#16202b; --ink-2:#5b6a7a; --rule:#d4dae1;
+  --azul:#1d6b8c; --ambar:#b2862c; --verde:#6f8a5a; --wash:#eef1f4; --ok:#4a7c59; --warn:#9a5f22;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0f161d; --surface:#18212a; --ink:#e7edf3; --ink-2:#97a6b5; --rule:#2d3a47;
+    --azul:#6fc0e0; --ambar:#e0b45c; --verde:#9db882; --wash:#202b36; --ok:#7fb48e; --warn:#d9a05a;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0f161d; --surface:#18212a; --ink:#e7edf3; --ink-2:#97a6b5; --rule:#2d3a47;
+  --azul:#6fc0e0; --ambar:#e0b45c; --verde:#9db882; --wash:#202b36; --ok:#7fb48e; --warn:#d9a05a;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:"Source Sans 3",system-ui,sans-serif;font-size:15px;line-height:1.55}
+.wrap{max-width:1200px;margin:0 auto;padding-inline:16px;padding-block:0 52px}
+header.top{padding-block:26px 16px;border-bottom:1px solid var(--rule)}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ambar)}
+h1{font-family:Archivo,system-ui,sans-serif;font-weight:800;font-size:clamp(27px,5.4vw,42px);line-height:1.04;margin:.22em 0 .22em;text-wrap:balance;letter-spacing:-.018em}
+.sub{color:var(--ink-2);max-width:64ch;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:16px;font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-2)}
+.meta b{color:var(--ink);font-weight:500}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);border-bottom:1px solid var(--rule);
+  display:flex;gap:2px;overflow-x:auto;padding-block:8px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{flex:0 0 auto;appearance:none;background:transparent;border:1px solid transparent;border-radius:999px;
+  font:600 13px/1 "Source Sans 3",sans-serif;color:var(--ink-2);padding:9px 14px;cursor:pointer;white-space:nowrap}
+nav.tabs button:hover{color:var(--ink);background:var(--wash)}
+nav.tabs button[aria-selected="true"]{color:var(--paper);background:var(--ink);border-color:var(--ink)}
+nav.tabs button:focus-visible{outline:2px solid var(--azul);outline-offset:2px}
+section.panel{padding-top:22px}
+.panel-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 20px;margin-bottom:12px}
+h2{font-family:Archivo,sans-serif;font-weight:600;font-size:21px;margin:0;letter-spacing:-.01em}
+h3.sec{font-family:Archivo,sans-serif;font-weight:600;font-size:16px;margin:26px 0 8px}
+.panel-head p{margin:2px 0 0;color:var(--ink-2);font-size:13.5px;max-width:62ch}
+.tools{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tools button,.tools label{font:500 12px/1 "IBM Plex Mono",monospace;background:var(--surface);border:1px solid var(--rule);
+  color:var(--ink);border-radius:6px;padding:7px 10px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.tools button:hover{border-color:var(--azul);color:var(--azul)}
+.tools button:focus-visible,.tools label:focus-within{outline:2px solid var(--azul);outline-offset:1px}
+.tools input[type=checkbox]{accent-color:var(--azul);margin:0}
+.sheet{background:var(--surface);border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+.sheet-scroll{overflow-x:auto;overflow-y:hidden}
+.sheet-inner{min-width:var(--planw,760px)}
+svg.plan{display:block;width:100%;height:auto}
+.rotulo{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;background:var(--rule);border-top:1px solid var(--rule)}
+.rotulo div{background:var(--surface);padding:7px 11px}
+.rotulo span{display:block;font:500 9.5px/1.3 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.rotulo b{font:600 12.5px/1.35 Archivo,sans-serif}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 268px;gap:20px;align-items:start}
+@media (max-width:900px){.layout{grid-template-columns:minmax(0,1fr)}}
+aside.notes{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:14px 16px}
+aside.notes h3{font-family:Archivo,sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ambar);margin:0 0 10px}
+aside.notes ul{margin:0;padding-left:1.1em}
+aside.notes li{margin-bottom:7px;font-size:13px;color:var(--ink-2)}
+aside.notes li b{color:var(--ink);font-weight:600}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px}
+#view3d{position:relative;background:linear-gradient(#cfdce6,#e6eaec);border:1px solid var(--rule);border-radius:4px;aspect-ratio:16/10;max-width:100%;overflow:hidden}
+@media (max-width:620px){#view3d{aspect-ratio:4/3}}
+#view3d canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
+#view3d canvas:active{cursor:grabbing}
+.hint{position:absolute;left:10px;bottom:10px;max-width:84%;font:400 11.5px/1.45 "IBM Plex Mono",monospace;color:#15222e;
+  background:rgba(255,255,255,.82);border-radius:4px;padding:6px 9px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:6px 9px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:Archivo,sans-serif;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2);font-weight:600}
+td.n,th.n{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.c{font-family:"IBM Plex Mono",monospace;color:var(--ink-2);white-space:nowrap}
+tr.cap td{background:var(--wash);font-family:Archivo,sans-serif;font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase}
+tr.sum td{font-weight:700;border-top:2px solid var(--ink);border-bottom:none;font-size:15px}
+tr.it{cursor:pointer}
+tr.it:hover td{background:var(--wash)}
+tr.det td{background:var(--paper);padding:0}
+.apu{padding:12px 10px 16px}
+.apu table{font-size:12.5px}
+.apu h4{font-family:Archivo,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--azul);margin:12px 0 4px}
+.apu .tot td{font-weight:600}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:12px;margin:4px 0 20px}
+.card{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--ambar);border-radius:3px;padding:11px 13px}
+.card span{display:block;font:500 10.5px/1.25 "IBM Plex Mono",monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2)}
+.card strong{display:block;font-family:Archivo,sans-serif;font-size:21px;font-weight:600;margin-top:5px;font-variant-numeric:tabular-nums}
+.spec{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:16px 18px;margin-bottom:14px}
+.spec h3{font-family:Archivo,sans-serif;font-size:15px;margin:0 0 4px}
+.spec .num{font:500 11px/1 "IBM Plex Mono",monospace;color:var(--ambar);letter-spacing:.1em}
+.spec dl{margin:10px 0 0;display:grid;gap:9px}
+.spec dt{font:600 10.5px/1 Archivo,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--azul)}
+.spec dd{margin:3px 0 0;font-size:13.8px;max-width:78ch}
+.aviso{border:1px solid var(--rule);border-left:3px solid var(--warn);background:var(--surface);border-radius:3px;padding:12px 15px;margin:16px 0;font-size:13.5px}
+.aviso b{color:var(--warn)}
+.dl{display:grid;gap:12px;margin-top:6px}
+.dl-row{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;
+  background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:13px 15px}
+.dl-row b{font-family:Archivo,sans-serif;font-size:14.5px}
+.dl-row span{display:block;color:var(--ink-2);font-size:13px}
+.tag{font:500 11px/1 "IBM Plex Mono",monospace;border:1px solid var(--rule);border-radius:999px;padding:5px 9px;color:var(--ink-2);white-space:nowrap}
+code{font-family:"IBM Plex Mono",monospace;font-size:12.5px;background:var(--wash);padding:2px 5px;border-radius:3px;overflow-wrap:anywhere}
+footer{margin-top:34px;padding-top:14px;border-top:1px solid var(--rule);font-size:12.5px;color:var(--ink-2)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-2)}
+.legend i{display:inline-block;width:22px;height:0;border-top:2px solid var(--azul);vertical-align:3px;margin-right:6px}
+.legend .sw{display:inline-block;width:12px;height:12px;background:var(--ink);vertical-align:-2px;margin-right:6px}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">Anteproyecto · vivienda unifamiliar de dos niveles con local comercial</div>
+  <h1>Casa Yerko 250 m²</h1>
+  <p class="sub">Planos acotados, fachadas, vista tridimensional, cómputos métricos, análisis de precios unitarios y especificaciones técnicas. Todo generado desde un único modelo geométrico, de modo que una medida del plano y una cantidad del presupuesto nunca se contradicen.</p>
+  <div class="meta">
+    <span>Terreno <b>300,00 m²</b></span>
+    <span>Cubierto <b>249,70 m²</b></span>
+    <span>Ocupación <b>44 %</b></span>
+    <span>Presupuesto <b id="m-total">—</b></span>
+    <span>Costo <b id="m-m2">—</b></span>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Láminas y documentos">
+  <button role="tab" id="t-sitio" aria-controls="p-sitio" aria-selected="false">01 · Implantación</button>
+  <button role="tab" id="t-pb" aria-controls="p-pb" aria-selected="true">02 · Planta baja</button>
+  <button role="tab" id="t-pa" aria-controls="p-pa" aria-selected="false">03 · Planta alta</button>
+  <button role="tab" id="t-fach" aria-controls="p-fach" aria-selected="false">04 · Fachadas</button>
+  <button role="tab" id="t-3d" aria-controls="p-3d" aria-selected="false">05 · Vista 3D</button>
+  <button role="tab" id="t-comp" aria-controls="p-comp" aria-selected="false">06 · Cómputos</button>
+  <button role="tab" id="t-apu" aria-controls="p-apu" aria-selected="false">07 · Precios unitarios</button>
+  <button role="tab" id="t-esp" aria-controls="p-esp" aria-selected="false">08 · Especificaciones</button>
+  <button role="tab" id="t-dl" aria-controls="p-dl" aria-selected="false">09 · Descargas</button>
+</nav>
+
+<section class="panel" id="p-sitio" role="tabpanel" aria-labelledby="t-sitio" hidden>
+  <div class="panel-head">
+    <div><h2>Implantación en el terreno</h2>
+    <p>Retiro frontal de 3,00 m para el ingreso vehicular, 0,50 m a cada colindante y 10,00 m de patio posterior con churrasquera bajo pérgola.</p></div>
+    <div class="tools"><button data-zoom="-">− Zoom</button><button data-zoom="+">+ Zoom</button></div>
+  </div>
+  <div class="layout">
+    <div class="sheet"><div class="sheet-scroll"><div class="sheet-inner" id="sheet-sitio"></div></div><div class="rotulo" data-rot="A-01|Implantación y techos|1:100"></div></div>
+    <aside class="notes">
+      <h3>Datos del lote</h3>
+      <ul>
+        <li><b>Frente</b> 12,00 m sobre calle; fondo 25,00 m.</li>
+        <li><b>Huella construida</b> 132,00 m², 44 % de ocupación.</li>
+        <li><b>Ingreso vehicular</b> portón de 4,80 m; peatonal de 1,50 m al hall.</li>
+        <li><b>Tienda</b> con puerta y vitrina propias sobre la calle, sin pasar por la vivienda.</li>
+        <li><b>Patio</b> churrasquera de 3,50 × 3,00 m, tendedero y 120 m² de jardín.</li>
+        <li><b>Cerco</b> frontal de 1,00 m opaco + 1,20 m de reja; laterales ciegos de 2,20 m.</li>
+      </ul>
+      <div class="legend"><span><i></i>Vanos y carpintería</span><span><span class="sw"></span>Muro</span></div>
+    </aside>
+  </div>
+</section>
+
+<section class="panel" id="p-pb" role="tabpanel" aria-labelledby="t-pb">
+  <div class="panel-head">
+    <div><h2>Planta baja · 132,00 m²</h2>
+    <p>Zona social y de servicio al fondo, abierta al patio; garaje, hall con escalera y tienda sobre la calle.</p></div>
+    <div class="tools">
+      <label><input type="checkbox" id="f-pb" checked> Mobiliario</label>
+      <label><input type="checkbox" id="d-pb" checked> Cotas</label>
+      <button data-zoom="-">− Zoom</button><button data-zoom="+">+ Zoom</button>
+    </div>
+  </div>
+  <div class="layout">
+    <div class="sheet"><div class="sheet-scroll"><div class="sheet-inner" id="sheet-pb"></div></div><div class="rotulo" data-rot="A-02|Planta baja acotada|1:100"></div></div>
+    <aside class="notes">
+      <h3>Criterios de planta</h3>
+      <ul>
+        <li><b>Sala–comedor de 43,40 m²</b> con ventanal corredizo de 2,40 m al patio y vano libre de 1,40 m a la cocina.</li>
+        <li><b>Cocina de 17,28 m²</b> en L con isla de 1,80 × 0,90 m y paso directo a la lavandería.</li>
+        <li><b>Núcleo húmedo agrupado</b>: baño social, baño de servicio y lavandería comparten un montante sanitario.</li>
+        <li><b>Garaje de 5,60 × 5,00 m</b> para dos autos en paralelo, con puerta interior al hall.</li>
+        <li><b>Tienda de 14,00 m²</b> con mostrador, estantería y baño a 4 m por el hall.</li>
+        <li><b>Escalera</b> en U, 18 contrapasos de 0,175 m y pisada de 0,28 m, ancho útil 1,10 m.</li>
+        <li>Altura libre <b>2,70 m</b>.</li>
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<section class="panel" id="p-pa" role="tabpanel" aria-labelledby="t-pa" hidden>
+  <div class="panel-head">
+    <div><h2>Planta alta · 117,70 m²</h2>
+    <p>Cuatro dormitorios de 15 m², suite con baño y vestidor, baño compartido, estar familiar, balcón frontal y terraza posterior.</p></div>
+    <div class="tools">
+      <label><input type="checkbox" id="f-pa" checked> Mobiliario</label>
+      <label><input type="checkbox" id="d-pa" checked> Cotas</label>
+      <button data-zoom="-">− Zoom</button><button data-zoom="+">+ Zoom</button>
+    </div>
+  </div>
+  <div class="layout">
+    <div class="sheet"><div class="sheet-scroll"><div class="sheet-inner" id="sheet-pa"></div></div><div class="rotulo" data-rot="A-03|Planta alta acotada|1:100"></div></div>
+    <aside class="notes">
+      <h3>Criterios de planta</h3>
+      <ul>
+        <li><b>Dormitorios 1, 2 y 3</b> de 5,00 × 3,00 m = 15,00 m² exactos, con placard de 0,60 × 2,00 m.</li>
+        <li><b>Suite principal</b> 15,84 m² con baño propio, vestidor de 5,60 m² y salida a la terraza.</li>
+        <li><b>Pasillo de 1,20 m</b>, iluminado por el estar y la ventana del hall de escalera.</li>
+        <li><b>Baños interiores</b> (suite y social de planta baja) ventilan por ducto de 0,40 × 0,60 m con extractor.</li>
+        <li><b>Balcón</b> 14,30 m² descubierto; <b>terraza posterior</b> 8,16 m² cubierta.</li>
+        <li>Altura libre <b>2,60 m</b>; losa aligerada de 0,20 m.</li>
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<section class="panel" id="p-fach" role="tabpanel" aria-labelledby="t-fach" hidden>
+  <div class="panel-head">
+    <div><h2>Fachadas</h2>
+    <p>Las cuatro vistas ortogonales con niveles acotados: ± 0,00 de piso terminado, + 2,70 de losa de entrepiso, + 2,90 de piso alto, + 5,50 de losa de cubierta y + 6,30 de parapeto.</p></div>
+    <div class="tools"><button data-zoom="-">− Zoom</button><button data-zoom="+">+ Zoom</button></div>
+  </div>
+  <div class="grid2" id="fachadas"></div>
+  <aside class="notes" style="margin-top:16px">
+    <h3>Composición de fachada</h3>
+    <ul>
+      <li><b>Frente</b> el balcón de 1,30 m de vuelo protege del sol del norte y marca el acceso; el paño de madera del ingreso separa el portón del garaje de la vitrina de la tienda.</li>
+      <li><b>Posterior</b> el ventanal de la sala y la terraza de la suite abren al patio, el lado fresco del lote.</li>
+      <li><b>Laterales</b> ventanas altas de antepecho 1,60 m en baños y lavandería, por la cercanía del colindante a 0,50 m.</li>
+      <li>Altura total sobre vereda: <b>6,30 m</b> al parapeto y 7,42 m al tanque de reserva, que es el punto más alto a verificar contra la altura máxima municipal.</li>
+    </ul>
+  </aside>
+</section>
+
+<section class="panel" id="p-3d" role="tabpanel" aria-labelledby="t-3d" hidden>
+  <div class="panel-head">
+    <div><h2>Vista tridimensional</h2>
+    <p>Axonometría del conjunto y modelo navegable, construidos con la misma geometría de los planos.</p></div>
+  </div>
+  <h3 class="sec">Axonometría del conjunto</h3>
+  <div class="sheet"><div class="sheet-scroll"><div class="sheet-inner" id="sheet-axo" style="--planw:900px"></div></div>
+    <div class="rotulo" data-rot="A-05|Axonometría desde la calle|s/esc"></div></div>
+  <h3 class="sec">Modelo navegable</h3>
+  <div class="tools" style="margin-bottom:10px">
+    <button data-cam="frente">Frente</button><button data-cam="aerea">Aérea</button>
+    <button data-cam="patio">Patio</button><button data-cam="lateral">Lateral</button>
+    <label><input type="checkbox" id="c-roof" checked> Cubierta</label>
+    <label><input type="checkbox" id="c-upper" checked> Planta alta</label>
+    <label><input type="checkbox" id="c-site" checked> Entorno</label>
+  </div>
+  <div id="view3d"><div class="hint" id="hint3d">Preparando el modelo…</div></div>
+  <aside class="notes" style="margin-top:14px">
+    <h3>Lectura del volumen</h3>
+    <ul>
+      <li><b>Dos cuerpos</b>: la caja blanca de dos niveles y el zócalo de garaje y tienda, unidos por el paño de madera del ingreso.</li>
+      <li><b>Cubierta plana</b> con parapeto de 0,80 m, pendiente del 1,5 % y previsión para seis paneles fotovoltaicos.</li>
+      <li>Desmarque <b>Cubierta</b> y <b>Planta alta</b> para recorrer la planta baja construida en volumen.</li>
+      <li>Si el modelo navegable no carga en su equipo, la axonometría de arriba muestra lo mismo: es un dibujo, no necesita aceleración gráfica.</li>
+    </ul>
+  </aside>
+</section>
+
+<section class="panel" id="p-comp" role="tabpanel" aria-labelledby="t-comp" hidden>
+  <div class="panel-head"><div><h2>Áreas y cómputos métricos</h2>
+  <p>Cantidades medidas sobre el modelo: longitudes de muro por espesor, superficies por ambiente y volúmenes de hormigón calculados a partir de los ejes estructurales, no estimados a ojo.</p></div></div>
+  <div class="cards" id="cards"></div>
+  <h3 class="sec">Superficies por ambiente</h3>
+  <div class="grid2">
+    <div><table id="tb-pb"></table></div>
+    <div><table id="tb-pa"></table></div>
+  </div>
+  <h3 class="sec">Cómputo métrico resumido</h3>
+  <div class="sheet" style="padding:2px 10px 10px"><table id="tb-comp"></table></div>
+  <div class="aviso"><b>Criterio de medición.</b> Las superficies se miden sobre ejes de muro. Los muros de mampostería se computan descontando los vanos reales de puertas y ventanas: de 445,84 m² brutos de mampostería se descuentan 56,37 m² de vanos. Los revoques se miden por cara. El acero se estima en 90 kg por m³ de hormigón estructural más 4,5 kg por m² de losa; esta cifra debe reemplazarse por la planilla de fierros del cálculo estructural.</div>
+</section>
+
+<section class="panel" id="p-apu" role="tabpanel" aria-labelledby="t-apu" hidden>
+  <div class="panel-head"><div><h2>Análisis de precios unitarios y presupuesto</h2>
+  <p>Toque cualquier ítem para ver su análisis completo: materiales, mano de obra con cargas sociales, equipo y recargos.</p></div></div>
+  <div class="cards" id="cards-apu"></div>
+  <div class="sheet" style="padding:2px 10px 10px;overflow-x:auto"><table id="tb-pres"></table></div>
+  <div class="aviso"><b>Estructura del precio unitario.</b> Materiales + mano de obra con 55 % de cargas sociales y 14,94 % de IVA sobre mano de obra + equipo y herramientas (5 % de la mano de obra) + 10 % de gastos generales + 7 % de utilidad + 3,09 % de impuesto a las transacciones. Es la estructura habitual de los APU en Bolivia.</div>
+  <div class="aviso"><b>Los precios son referenciales.</b> Están tomados de rangos de mercado 2026 publicados en fuentes comerciales, no de una tabla oficial, y varían por ciudad, volumen de compra y fecha. Antes de contratar, cotice al menos cemento, fierro, ladrillo, porcelanato y carpinterías con proveedores de su plaza y reemplace los valores en la hoja de insumos del Excel: el presupuesto se recalcula solo.</div>
+</section>
+
+<section class="panel" id="p-esp" role="tabpanel" aria-labelledby="t-esp" hidden>
+  <div class="panel-head"><div><h2>Especificaciones técnicas</h2>
+  <p>Por capítulo: descripción, materiales, procedimiento de ejecución y forma de medición y pago, con las normas bolivianas aplicables.</p></div></div>
+  <div id="especs"></div>
+</section>
+
+<section class="panel" id="p-dl" role="tabpanel" aria-labelledby="t-dl" hidden>
+  <div class="panel-head"><div><h2>Documentos para descargar</h2>
+  <p>Los cuatro archivos se generaron desde este mismo modelo. Están adjuntos en la conversación y versionados en el repositorio.</p></div></div>
+  <div class="dl" id="dl-list"></div>
+  <h3 class="sec">Dónde encontrarlos</h3>
+  <div class="spec">
+    <dl>
+      <dt>En la conversación</dt>
+      <dd>Cada archivo aparece como una tarjeta adjunta en el chat, debajo de la respuesta. Desde ahí se abre o se guarda directamente. Es la vía más rápida.</dd>
+      <dt>En el repositorio</dt>
+      <dd>Rama <code>claude/affectionate-euler-y0p1tt</code>, carpeta <code>obra/entregables/</code>. También están los archivos fuente: <code>obra/proyecto.js</code> (geometría y dibujo), <code>obra/presupuesto.js</code> (insumos, APU y presupuesto) y <code>obra/especificaciones.js</code>. Cambiar un precio ahí y volver a correr <code>node build-datos.js</code> actualiza todo el presupuesto.</dd>
+      <dt>Esta lámina</dt>
+      <dd>Vive en claude.ai y se actualiza en el mismo enlace, así que conviene guardarlo. Desde dentro de la página no se puede imprimir ni descargar: el visor lo bloquea, y por eso los documentos van como archivos aparte.</dd>
+    </dl>
+  </div>
+  <div class="aviso"><b>Antes de construir.</b> Este es un anteproyecto. Para ejecutar la obra faltan tres cosas que no se pueden suplir con un dibujo: estudio de suelos, cálculo estructural firmado por un profesional, y planos aprobados por el municipio con las instalaciones de agua, alcantarillado y energía visadas por las empresas prestadoras. Los retiros y la altura usados aquí (3,00 m al frente, 0,50 m a los lados, 6,30 m de altura) deben confrontarse con el reglamento de su municipio, que puede exigir más.</div>
+  <footer>Anteproyecto arquitectónico a nivel de esquema. Superficies, circulaciones y vanos son definitivos para discusión; el dimensionamiento estructural, sanitario y eléctrico es preliminar y debe verificarse en el proyecto ejecutivo.</footer>
+</section>
+</div>
+
+<script src="proyecto.js"></script>
+<script src="datos.js"></script>
+<script src="especificaciones.js"></script>
+<script src="view3d.js"></script>
+<script>
+"use strict";
+var P = window.PROY, D = window.DATOS, E = window.ESPEC;
+function nf(v, d) { return Number(v).toLocaleString("es-BO", { minimumFractionDigits: d === undefined ? 2 : d, maximumFractionDigits: d === undefined ? 2 : d }); }
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+function el(id) { return document.getElementById(id); }
+
+/* ---------------------------------------------------------------- rótulos */
+document.querySelectorAll("[data-rot]").forEach(function (r) {
+  var p = r.dataset.rot.split("|");
+  r.innerHTML = [
+    ["Proyecto", "Casa Yerko 250 m²"], ["Lámina", p[0]], ["Contenido", p[1]],
+    ["Escala", p[2]], ["Superficie", "249,70 m² cubiertos"], ["Fecha", "2026"]
+  ].map(function (c) { return "<div><span>" + c[0] + "</span><b>" + c[1] + "</b></div>"; }).join("");
+});
+
+/* ------------------------------------------------------------------ planos */
+el("sheet-sitio").innerHTML = P.siteSVG();
+el("sheet-axo").innerHTML = P.axoSVG();
+function drawPB() { el("sheet-pb").innerHTML = P.planSVG(P.PB, { furn: el("f-pb").checked, dims: el("d-pb").checked }); }
+function drawPA() { el("sheet-pa").innerHTML = P.planSVG(P.PA, { furn: el("f-pa").checked, dims: el("d-pa").checked }); }
+drawPB(); drawPA();
+["f-pb", "d-pb"].forEach(function (id) { el(id).addEventListener("change", drawPB); });
+["f-pa", "d-pa"].forEach(function (id) { el(id).addEventListener("change", drawPA); });
+
+el("fachadas").innerHTML = ["N", "S", "E", "W"].map(function (k, i) {
+  return '<div class="sheet"><div class="sheet-scroll"><div class="sheet-inner" style="--planw:0">' + P.elevSVG(k) +
+    '</div></div><div class="rotulo" data-rot2="A-04.' + (i + 1) + "|" + P.SIDES[k].t + '|1:100"></div></div>';
+}).join("");
+document.querySelectorAll("[data-rot2]").forEach(function (r) {
+  var p = r.dataset.rot2.split("|");
+  r.innerHTML = [["Lámina", p[0]], ["Vista", p[1]], ["Escala", p[2]]]
+    .map(function (c) { return "<div><span>" + c[0] + "</span><b>" + c[1] + "</b></div>"; }).join("");
+});
+
+var zoomW = 780;
+document.querySelectorAll("[data-zoom]").forEach(function (b) {
+  b.addEventListener("click", function () {
+    zoomW = Math.max(520, Math.min(2800, zoomW * (b.dataset.zoom === "+" ? 1.3 : 1 / 1.3)));
+    b.closest("section").querySelectorAll(".sheet-inner").forEach(function (s) { s.style.setProperty("--planw", Math.round(zoomW) + "px"); });
+  });
+});
+
+/* ------------------------------------------------------- áreas y cómputos */
+var G = D.G, Rs = D.resumen;
+el("m-total").textContent = "Bs " + nf(Rs.total, 0);
+el("m-m2").textContent = "Bs " + nf(Rs.porM2, 0) + "/m²";
+
+function tablaSup(L, node) {
+  var tot = 0, rows = "";
+  L.rooms.forEach(function (r) {
+    var a = P.area(r.r); tot += a;
+    rows += "<tr><td>" + esc(r.n) + "</td><td class='n'>" + P.f2(r.r[2] - r.r[0]) + " × " + P.f2(r.r[3] - r.r[1]) +
+      "</td><td class='n'>" + P.f2(a) + "</td></tr>";
+  });
+  rows += "<tr class='sum'><td>Total " + L.name.toLowerCase() + "</td><td></td><td class='n'>" + P.f2(tot) + "</td></tr>";
+  node.innerHTML = "<thead><tr><th>Ambiente</th><th class='n'>Medidas (m)</th><th class='n'>m²</th></tr></thead><tbody>" + rows + "</tbody>";
+}
+tablaSup(P.PB, el("tb-pb")); tablaSup(P.PA, el("tb-pa"));
+
+el("cards").innerHTML = [
+  ["Terreno", nf(G.terreno) + " m²"], ["Cubierto total", nf(Rs.supTotal) + " m²"],
+  ["Planta baja", nf(Rs.supPB) + " m²"], ["Planta alta", nf(Rs.supPA) + " m²"],
+  ["Balcón descubierto", nf(G.balcon) + " m²"], ["Ocupación", nf(Rs.ocupacion, 0) + " %"],
+  ["Dormitorios", "4 · 15 m²"], ["Baños", "4"]
+].map(function (c) { return '<div class="card"><span>' + c[0] + '</span><strong>' + c[1] + "</strong></div>"; }).join("");
+
+var COMP = [
+  ["Movimiento de tierras", [
+    ["Excavación de zapatas (20 u de 1,40 × 1,40 × 1,20 m)", "m³", G.excavZapatas],
+    ["Excavación de zanja de cimiento (72,00 ml × 0,50 × 1,00)", "m³", G.excavCimiento],
+    ["Relleno y compactado", "m³", G.relleno],
+    ["Retiro de escombros con esponjamiento 1,25", "m³", G.escombros]]],
+  ["Estructura de hormigón", [
+    ["Hormigón ciclópeo de cimiento", "m³", G.volCiclopeo],
+    ["H°A° en zapatas aisladas", "m³", G.volZapatas],
+    ["H°A° en sobrecimiento y viga de arranque", "m³", G.volSobrecimiento],
+    ["H°A° en columnas (20 en planta baja, 18 en alta)", "m³", G.volColumnas],
+    ["H°A° en vigas (104,00 ml por nivel)", "m³", G.volVigas],
+    ["Losa aligerada de entrepiso y cubierta", "m²", G.losaTotal],
+    ["Escalera de H°A°", "m²", G.escalera],
+    ["Acero de refuerzo fy = 4 200", "kg", G.acero],
+    ["Encofrado de columnas y vigas", "m²", G.encofrado]]],
+  ["Mampostería y revoques", [
+    ["Muro de ladrillo gambote 18 cm (neto de vanos)", "m²", G.muro18],
+    ["Tabique de 12 cm en baños, vestidor y clóset", "m²", G.tabique12],
+    ["Parapeto de cubierta h = 0,80 m", "m²", G.parapeto],
+    ["Revoque interior de yeso", "m²", G.revoqueInt],
+    ["Revoque exterior de mortero", "m²", G.revoqueExt],
+    ["Cielo raso de yeso", "m²", G.cieloRaso],
+    ["Pintura interior", "m²", G.pinturaInt],
+    ["Pintura exterior", "m²", G.pinturaExt]]],
+  ["Pisos y revestimientos", [
+    ["Contrapiso de hormigón sobre terreno", "m²", G.contrapiso],
+    ["Piso de porcelanato 60 × 60", "m²", G.pisoPorcelanato],
+    ["Piso flotante en dormitorios", "m²", G.pisoFlotante],
+    ["Cerámica antideslizante", "m²", G.pisoCeramica],
+    ["Zócalo de porcelanato", "ml", G.zocalo],
+    ["Azulejo en baños h = 2,10 m", "m²", G.azulejoBanos],
+    ["Azulejo en cocina y lavandería", "m²", G.azulejoCocina],
+    ["Mesón de granito", "m²", G.meson]]],
+  ["Cubierta y carpintería", [
+    ["Impermeabilización de losa", "m²", G.impermeabilizacion],
+    ["Bajantes pluviales Ø110", "ml", G.bajantes],
+    ["Puertas interiores placa", "pza", G.puertasInt],
+    ["Puertas exteriores", "pza", G.puertasExt],
+    ["Ventanas de aluminio con vidrio 6 mm", "m²", G.ventanasM2],
+    ["Portón seccional de garaje", "pza", G.portones],
+    ["Baranda metálica de balcón y escalera", "ml", 21.80]]],
+  ["Instalaciones", [
+    ["Puntos de agua fría", "pto", G.puntosAguaFria],
+    ["Puntos de agua caliente", "pto", G.puntosAguaCaliente],
+    ["Puntos de desagüe", "pto", G.puntosDesague],
+    ["Colectores y bajantes Ø110", "ml", G.colectores],
+    ["Cámaras de inspección", "pza", G.camaras],
+    ["Puntos de iluminación", "pto", G.puntosLuz],
+    ["Tomacorrientes", "pto", G.puntosToma]]],
+  ["Obras exteriores", [
+    ["Cerco perimetral h = 2,20 m", "m²", G.cercoLateral],
+    ["Cerco frontal con reja", "ml", G.cercoFrontal],
+    ["Pavimento exterior de hormigón", "m²", G.pavimentoExt],
+    ["Pérgola de madera", "m²", G.pergola],
+    ["Jardinería y césped", "m²", G.jardin]]]
+];
+el("tb-comp").innerHTML = "<thead><tr><th>Descripción</th><th class='n'>Unidad</th><th class='n'>Cantidad</th></tr></thead><tbody>" +
+  COMP.map(function (c) {
+    return "<tr class='cap'><td colspan='3'>" + esc(c[0]) + "</td></tr>" + c[1].map(function (r) {
+      return "<tr><td>" + esc(r[0]) + "</td><td class='n'>" + r[1] + "</td><td class='n'>" + nf(r[2]) + "</td></tr>";
+    }).join("");
+  }).join("") + "</tbody>";
+
+/* --------------------------------------------------------- presupuesto/APU */
+el("cards-apu").innerHTML = [
+  ["Presupuesto total", "Bs " + nf(Rs.total, 0)], ["Costo por m²", "Bs " + nf(Rs.porM2, 0)],
+  ["Ítems analizados", String(Rs.items)], ["Obra gruesa", nf(Rs.capitulos[2].total / Rs.total * 100, 0) + " %"],
+  ["Cargas sociales", "55 %"], ["Gastos generales", "10 %"], ["Utilidad", "7 %"], ["IT", "3,09 %"]
+].map(function (c) { return '<div class="card"><span>' + c[0] + '</span><strong>' + c[1] + "</strong></div>"; }).join("");
+
+function apuHTML(a) {
+  function filas(rows) {
+    return rows.map(function (r) {
+      return "<tr><td>" + esc(r.desc) + "</td><td class='n'>" + r.un + "</td><td class='n'>" + nf(r.cant, 3) +
+        "</td><td class='n'>" + nf(r.pu) + "</td><td class='n'>" + nf(r.total) + "</td></tr>";
+    }).join("");
+  }
+  var h = '<div class="apu"><table><thead><tr><th>Descripción</th><th class="n">Un.</th><th class="n">Cant.</th><th class="n">P. unit. Bs</th><th class="n">Parcial Bs</th></tr></thead><tbody>';
+  if (a.mat.length) h += '<tr class="cap"><td colspan="5">1. Materiales</td></tr>' + filas(a.mat) +
+    '<tr class="tot"><td colspan="4">Subtotal materiales</td><td class="n">' + nf(a.A) + "</td></tr>";
+  if (a.mo.length) h += '<tr class="cap"><td colspan="5">2. Mano de obra</td></tr>' + filas(a.mo) +
+    '<tr><td colspan="4">Subtotal mano de obra</td><td class="n">' + nf(a.B) + "</td></tr>" +
+    '<tr><td colspan="4">Cargas sociales 55 %</td><td class="n">' + nf(a.cargas) + "</td></tr>" +
+    '<tr><td colspan="4">IVA sobre mano de obra 14,94 %</td><td class="n">' + nf(a.ivaMO) + "</td></tr>" +
+    '<tr class="tot"><td colspan="4">Subtotal mano de obra con recargos</td><td class="n">' + nf(a.subMO) + "</td></tr>";
+  h += '<tr class="cap"><td colspan="5">3. Equipo, maquinaria y herramientas</td></tr>' + filas(a.eq) +
+    '<tr><td colspan="4">Herramientas menores 5 % de la mano de obra</td><td class="n">' + nf(a.herram) + "</td></tr>" +
+    '<tr class="tot"><td colspan="4">Subtotal equipo</td><td class="n">' + nf(a.subEQ) + "</td></tr>";
+  h += '<tr class="cap"><td colspan="5">4. Recargos</td></tr>' +
+    '<tr class="tot"><td colspan="4">Costo directo (1 + 2 + 3)</td><td class="n">' + nf(a.D) + "</td></tr>" +
+    '<tr><td colspan="4">Gastos generales y administrativos 10 %</td><td class="n">' + nf(a.gg) + "</td></tr>" +
+    '<tr><td colspan="4">Utilidad 7 %</td><td class="n">' + nf(a.ut) + "</td></tr>" +
+    '<tr><td colspan="4">Impuesto a las transacciones 3,09 %</td><td class="n">' + nf(a.it) + "</td></tr>" +
+    '<tr class="sum"><td colspan="4">Precio unitario</td><td class="n">Bs ' + nf(a.pu) + "</td></tr>";
+  return h + "</tbody></table></div>";
+}
+
+(function presupuesto() {
+  var h = "<thead><tr><th>Ítem</th><th>Descripción</th><th class='n'>Un.</th><th class='n'>Cantidad</th><th class='n'>P. unit. Bs</th><th class='n'>Parcial Bs</th></tr></thead><tbody>";
+  var capIdx = -1;
+  D.items.forEach(function (it, i) {
+    if (it.tipo === "cap") {
+      capIdx++;
+      h += "<tr class='cap'><td>" + it.c + "</td><td>" + esc(it.d) + "</td><td colspan='3'></td><td class='n'>" +
+        nf(Rs.capitulos[capIdx].total) + "</td></tr>";
+      return;
+    }
+    h += "<tr class='it' data-i='" + i + "' tabindex='0'><td class='c'>" + it.c + "</td><td>" + esc(it.d) +
+      "</td><td class='n'>" + it.un + "</td><td class='n'>" + nf(it.q) + "</td><td class='n'>" + nf(it.pu) +
+      "</td><td class='n'>" + nf(it.parcial) + "</td></tr>";
+    h += "<tr class='det' id='det-" + i + "' hidden><td colspan='6'></td></tr>";
+  });
+  h += "<tr class='sum'><td colspan='5'>TOTAL PRESUPUESTO (Bs)</td><td class='n'>" + nf(Rs.total) + "</td></tr>";
+  h += "<tr><td colspan='5'>Costo por metro cuadrado cubierto</td><td class='n'>" + nf(Rs.porM2) + "</td></tr></tbody>";
+  el("tb-pres").innerHTML = h;
+  function toggle(i) {
+    var det = el("det-" + i);
+    if (!det) return;
+    if (det.hidden) {
+      if (!det.dataset.on) { det.firstChild.innerHTML = apuHTML(D.items[i].apu); det.dataset.on = "1"; }
+      det.hidden = false;
+    } else det.hidden = true;
+  }
+  el("tb-pres").addEventListener("click", function (ev) {
+    var tr = ev.target.closest("tr.it");
+    if (tr) toggle(tr.dataset.i);
+  });
+  el("tb-pres").addEventListener("keydown", function (ev) {
+    var tr = ev.target.closest && ev.target.closest("tr.it");
+    if (tr && (ev.key === "Enter" || ev.key === " ")) { ev.preventDefault(); toggle(tr.dataset.i); }
+  });
+})();
+
+/* ------------------------------------------------------- especificaciones */
+el("especs").innerHTML = E.map(function (c) {
+  return '<div class="spec"><div class="num">CAPÍTULO ' + c.c + "</div><h3>" + esc(c.t) + "</h3><dl>" +
+    c.b.map(function (p) { return "<dt>" + esc(p[0]) + "</dt><dd>" + esc(p[1]) + "</dd>"; }).join("") + "</dl></div>";
+}).join("");
+
+/* --------------------------------------------------------------- descargas */
+el("dl-list").innerHTML = [
+  ["Casa-Yerko-250_Planos.pdf", "Seis láminas A3: implantación, planta baja, planta alta, las cuatro fachadas y la axonometría, acotadas y con rótulo.", "PDF · A3"],
+  ["Casa-Yerko-250_Computos-APU-Presupuesto.xlsx", "Cinco hojas: resumen, cómputos métricos, presupuesto general, los 59 análisis de precios unitarios y la lista de insumos con fórmulas vivas.", "Excel"],
+  ["Casa-Yerko-250_Especificaciones-Tecnicas.docx", "Especificaciones por capítulo con normas aplicables, más memoria descriptiva y cuadro de áreas.", "Word"],
+  ["Casa-Yerko-250_Especificaciones-Tecnicas.pdf", "La misma memoria y especificaciones en PDF, para enviar o imprimir sin editar.", "PDF"]
+].map(function (f) {
+  return '<div class="dl-row"><div style="min-width:0"><b>' + f[0] + "</b><span>" + f[1] + '</span></div><span class="tag">' + f[2] + "</span></div>";
+}).join("");
+
+/* ------------------------------------------------------------- pestañas */
+var tabs = Array.prototype.slice.call(document.querySelectorAll("nav.tabs button"));
+function show(id) {
+  tabs.forEach(function (b) {
+    var on = b.id === id;
+    b.setAttribute("aria-selected", on ? "true" : "false");
+    el(b.getAttribute("aria-controls")).hidden = !on;
+  });
+  if (id === "t-3d") init3D();
+}
+tabs.forEach(function (b) { b.addEventListener("click", function () { show(b.id); }); });
+
+show("t-pb");
+</script>
